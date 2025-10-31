@@ -1,6 +1,6 @@
 /******************************************************************
  *
- *   BRODY DARRAH / COMP 272, 002
+ *   BRODY DARRAH / COMP 272 , SECTION 002
  *
  *   Note, additional comments provided throughout this source code
  *   is for educational purposes

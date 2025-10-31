@@ -1,6 +1,6 @@
 /******************************************************************
  *
- *   BRODY DARRAH / COMP 272, SECTION 002
+ *   BRODY DARRAH / COMP 272 , SECTION 002
  *
  *   This java file contains the problem solutions of isSubSet, findKthLargest,
  *   and sort2Arrays methods. You should utilize the Java Collection Framework for
