@@ -246,11 +246,74 @@ public class CuckooHash<K, V> {
 
  	public void put(K key, V value) {
 
-		// ADD YOUR CODE HERE - DO NOT FORGET TO ADD YOUR NAME AT TOP OF FILE.
-		// Also make sure you read this method's prologue above, it should help
-		// you. Especially the two HINTS in the prologue.
+		if (key == null){
+			throw new IllegalArgumentException("null key not supported");
+		}
 
-		return;
+		// First, see if this exact key,value is already in either candidate bucket
+		int h1 = hash1(key);
+		int h2 = hash2(key);
+
+		if (table[h1] != null){
+			boolean sameKey = table[h1].getBucKey().equals(key);
+			boolean sameVal = table[h1].getValue().equals(value);
+			if (sameKey && sameVal){
+				// exact pair already exists in h1 slot
+				return;
+			}
+		}
+		if (table[h2] != null){
+			boolean sameKey = table[h2].getBucKey().equals(key);
+			boolean sameVal = table[h2].getValue().equals(value);
+			if (sameKey && sameVal){
+				// exact pair already exists in h2 slot
+				return;
+			}
+		}
+
+		K curKey = key; 	// the one im currently trying to place
+		V curVal = value;
+		int idx = h1;		// aim at h1 first
+		int kicks = 0;		// count how many times I evict something
+
+		// Try at most CAPACITY displacements
+		// if it takes more, call it a cycle and grow the table
+		while (kicks < CAPACITY){
+			// if slot is empty, drop it in and finish
+			if (table[idx] == null){
+				table[idx] = new Bucket<>(curKey, curVal);
+				return;
+			}
+
+			// Cuckoo the current occupant out of this bucket
+			Bucket<K, V> evicted = table[idx];
+			// place current item here
+			table[idx] = new Bucket<>(curKey, curVal);
+
+			curKey = evicted.getBucKey();
+			curVal = evicted.getValue();
+
+			int evicH1 = hash1(curKey);
+			int evicH2 = hash2(curKey);
+
+			// if it was sitting in its h1 spot, hop it to h2 next. otherwise go to h1
+			if (idx == evicH1){
+				idx = evicH2;
+			} else {
+				idx = evicH1;
+			}
+			// one displacement performed
+			kicks = kicks + 1;
+		}
+
+		// if here, likely hit a cycle. grow and rehash, then retry
+		rehash();
+
+		// try to place the one that didnt fit before rehash
+		put(curKey, curVal);
+
+		// ensure the oringal KV is in there
+		put(key, value);
 	}
 
 
