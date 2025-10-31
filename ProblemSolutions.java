@@ -1,6 +1,6 @@
 /******************************************************************
  *
- *   YOUR NAME / SECTION NUMBER
+ *   BRODY DARRAH / COMP 272, SECTION 002
  *
  *   This java file contains the problem solutions of isSubSet, findKthLargest,
  *   and sort2Arrays methods. You should utilize the Java Collection Framework for
@@ -32,9 +32,30 @@ class ProblemSolutions {
 
     public boolean isSubset(int list1[], int list2[]) {
 
-        // ADD YOU CODE HERE -- DON'T FORGET TO ADD YOR NAME AT TOP OF FILE
+        // Return true if and only if B is a subset of A
+        // First insert every element of A into a HashSet,
+        // Then scan B and if any element isn't in the set, then not a subset.
 
-        return false;
+        if (list2 == null || list2.length == 0){
+            return true;
+        }
+
+
+        HashSet<Integer> found = new HashSet<>();
+        if (list1 != null){
+            for (int x : list1){
+                found.add(x);
+            }
+        }
+
+        // Check every element of B against set A
+        for (int y : list2){
+            if (!found.contains(y)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 
@@ -53,9 +74,17 @@ class ProblemSolutions {
 
     public int findKthLargest(int[] array, int k) {
 
-        // ADD YOUR CODE HERE
+        // Create a min heap
+        PriorityQueue<Integer> minK = new PriorityQueue<>();
 
-        return 0;
+        for (int val : array){
+            minK.add(val);
+            if (minK.size() > k){
+                minK.poll(); // keep only the k largest seen so far
+            }
+        }
+        // Root is now the k-th largest
+        return minK.peek();
     }
 
 
@@ -74,9 +103,44 @@ class ProblemSolutions {
 
     public int[] sort2Arrays(int[] array1, int[] array2) {
 
-        // ADD YOU CODE HERE
+        // Push all elements from both arrays into a min heap
+        // Pop them back in order into a result array
+        int len1 = 0;
+        int len2 = 0;
 
-        return null;
+        if (array1 != null){
+            len1 = array1.length;
+        }
+        if (array2 != null){
+            len2 = array2.length;
+        }
+        int total = len1 + len2; // How large the output needs to be
+
+        // Create min heap
+        PriorityQueue<Integer> pq = new PriorityQueue<>(total);
+
+        // push all of array1 if it exists
+        if (array1 != null){
+            for (int x : array1){
+                pq.add(x);
+            }
+        }
+        // push all of array2
+        if (array2 != null){
+            for (int x : array2){
+                pq.offer(x);
+            }
+        }
+
+        // Drain the heap into new array (sorted)
+        int[] out = new int[total];
+        int i = 0;
+        while (!pq.isEmpty()){
+            out[i] = pq.poll(); // smallest left comes out first
+            i++;
+        }
+
+        return out;
     }
 
 }
